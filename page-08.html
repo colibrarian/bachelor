@@ -296,8 +296,6 @@
       <button type="button" id="coord-submit">Проверить</button>
     </div>
     <p class="feedback" id="coord-feedback"></p>
-
-    <button class="next-btn" id="next-btn">Дальше →</button>
   </div>
 
 </div>
@@ -306,7 +304,6 @@
   const coordAnswer = document.getElementById('coord-answer');
   const coordSubmit = document.getElementById('coord-submit');
   const coordFeedback = document.getElementById('coord-feedback');
-  const nextBtn = document.getElementById('next-btn');
 
   const validAnswers = ['кулдыга', 'кулдига'];
 
@@ -321,18 +318,12 @@
       coordFeedback.style.color = 'var(--green)';
       coordAnswer.disabled = true;
       coordSubmit.disabled = true;
-      nextBtn.classList.add('show');
     } else {
       coordFeedback.textContent = 'Мимо. Думай башкой, а не жопой.';
       coordFeedback.className = 'feedback show';
       coordFeedback.style.color = 'var(--red)';
     }
   }
-
-  nextBtn.addEventListener('click', () => {
-    coordFeedback.textContent = 'Дальше пока некуда — переход на девятую страницу ещё не подключён.';
-    coordFeedback.style.color = 'var(--on-glass)';
-  });
 </script>
 
 </body>
