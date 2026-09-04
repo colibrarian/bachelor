@@ -326,23 +326,21 @@
   }
 
   function onAnswer(btn, chosen, r) {
-    const buttons = optionsEl.querySelectorAll('.opt');
-    buttons.forEach(b => { b.disabled = true; });
-
     if (chosen === r.correct) {
+      const buttons = optionsEl.querySelectorAll('.opt');
+      buttons.forEach(b => { b.disabled = true; });
       btn.classList.add('correct');
       feedback.className = 'feedback right-tone';
       feedback.textContent = r.right[Math.floor(Math.random() * r.right.length)];
+      reveal.innerHTML = `Верно: <b>${r.correct}</b>`;
+      reveal.classList.add('show');
+      nextBtn.classList.add('show');
     } else {
+      btn.disabled = true;
       btn.classList.add('wrong');
-      buttons.forEach(b => { if (b.textContent === r.correct) b.classList.add('correct'); });
       feedback.className = 'feedback wrong-tone';
       feedback.textContent = wrongLines[Math.floor(Math.random() * wrongLines.length)];
     }
-
-    reveal.innerHTML = `Верно: <b>${r.correct}</b>`;
-    reveal.classList.add('show');
-    nextBtn.classList.add('show');
   }
 
   nextBtn.addEventListener('click', () => {
