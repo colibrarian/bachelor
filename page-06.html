@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Тукумс — Мальчишник</title>
+<title>За руль — Мальчишник</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,39 +34,152 @@
     overflow-x: hidden;
     background: var(--concrete);
   }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.35;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.10) 0.6px, transparent 0.6px);
+    background-size: 4px 4px;
+    mix-blend-mode: multiply;
+  }
   .blob { position: fixed; border-radius: 50%; filter: blur(60px); z-index: 1; opacity: 0.5; }
   .blob.a { width: 300px; height: 300px; background: var(--glow-orange); top: -80px; left: -60px; }
   .blob.b { width: 260px; height: 260px; background: var(--glow-teal); bottom: -60px; right: -50px; opacity: 0.38; }
+
+  .stage { width: 100%; max-width: 460px; position: relative; z-index: 10; }
+
+  .eyebrow-wrap { display: flex; justify-content: center; margin-bottom: 16px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--glass-fill);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    box-shadow: 0 6px 16px var(--glass-shadow);
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--glow-orange); box-shadow: 0 0 8px var(--glow-orange); }
+
   .card {
     background: var(--glass-fill);
     backdrop-filter: blur(22px) saturate(1.3);
     -webkit-backdrop-filter: blur(22px) saturate(1.3);
     border: 1px solid var(--glass-border);
     border-radius: 22px;
-    padding: 34px 26px;
-    max-width: 420px;
-    width: 100%;
+    padding: 34px 26px 32px;
     text-align: center;
     position: relative;
-    z-index: 10;
     box-shadow: 0 20px 40px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.5);
   }
+  .card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 14px; right: 14px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+  }
+
+  .hazard-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(28,26,23,0.85);
+    color: #f1ede3;
+    font-weight: 600;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+  }
+  .hazard-chip .bar { width: 14px; height: 8px; background: repeating-linear-gradient(-45deg, #f1ede3 0 2px, var(--glow-orange) 2px 4px); border-radius: 2px; }
+
   h1 {
     font-family: 'Teko', sans-serif;
     font-weight: 600;
-    font-size: 40px;
+    font-size: 52px;
+    line-height: 0.96;
+    letter-spacing: 0.005em;
     color: var(--on-glass);
-    margin: 0 0 10px;
+    margin: 0 0 6px;
+    text-transform: uppercase;
   }
-  p { font-size: 14px; color: var(--on-glass-dim); line-height: 1.7; margin: 0; }
+
+  .subhead {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--on-glass-dim);
+    margin: 0 0 26px;
+  }
+
+  .route {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Teko', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.02em;
+    color: var(--on-glass);
+    margin: 0 0 26px;
+  }
+  .route .to { color: var(--glow-orange); }
+  .route .arrow { color: var(--on-glass-dim); font-family: 'Inter', sans-serif; font-size: 16px; }
+
+  .go-btn {
+    width: 100%;
+    font-family: 'Teko', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--glow-orange), #e0480f);
+    color: #fff3e8;
+    border: none;
+    padding: 15px 0;
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(226,87,13,0.4);
+    transition: transform 0.1s ease;
+  }
+  .go-btn:active { transform: scale(0.97); }
+  .go-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  .feedback {
+    margin-top: 16px;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--on-glass-dim);
+    min-height: 20px;
+  }
 </style>
 </head>
 <body>
+
 <div class="blob a"></div>
 <div class="blob b"></div>
-<div class="card">
-  <h1>Тукумс достигнут</h1>
-  <p>Здесь будет следующая загадка. Страница ещё в разработке — заглушка, чтобы цепочка ссылок не обрывалась.</p>
+
+<div class="stage">
+  <div class="eyebrow-wrap">
+    <div class="eyebrow"><span class="dot"></span>СТРАНИЦА 6</div>
+  </div>
+
+  <div class="card">
+    <div class="hazard-chip"><span class="bar"></span>ПОСАДКА ЗАВЕРШЕНА</div>
+
+    <h1>За руль</h1>
+    <p class="subhead">Координаты пробиты, курс проложен. Дальше сами — врубай музыку и погнали.</p>
+
+    <div class="route">
+      <span>СЕЙЧАС ЗДЕСЬ</span>
+      <span class="arrow">→</span>
+      <span class="to">ТУКУМС</span>
+    </div>
+  </div>
 </div>
+
 </body>
 </html>
