@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Кольцо — Мальчишник</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Neucha&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --concrete: #b7b2a8;
+    --glow-orange: #ff7a29;
+    --glow-teal: #2ec4c0;
+    --ink: #1c1a17;
+    --ink-dim: #55504a;
+    --glass-fill: rgba(255,255,255,0.34);
+    --glass-border: rgba(255,255,255,0.55);
+    --glass-shadow: rgba(30,24,14,0.28);
+    --on-glass: #201d19;
+    --on-glass-dim: #514c44;
+    --green: #1f8a4c;
+    --red: #d64420;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    display: flex;
+    justify-content: center;
+    padding: 34px 16px 60px;
+    position: relative;
+    overflow-x: hidden;
+    background: var(--concrete);
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.35;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.10) 0.6px, transparent 0.6px);
+    background-size: 4px 4px;
+    mix-blend-mode: multiply;
+  }
+
+  .blob { position: fixed; border-radius: 50%; filter: blur(60px); z-index: 1; opacity: 0.5; }
+  .blob.a { width: 300px; height: 300px; background: var(--glow-orange); top: -80px; left: -60px; }
+  .blob.b { width: 260px; height: 260px; background: var(--glow-teal); bottom: -60px; right: -50px; opacity: 0.38; }
+
+  .stage { width: 100%; max-width: 460px; position: relative; z-index: 10; }
+
+  .eyebrow-wrap { display: flex; justify-content: center; margin-bottom: 16px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--glass-fill);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    box-shadow: 0 6px 16px var(--glass-shadow);
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--glow-orange); box-shadow: 0 0 8px var(--glow-orange); }
+
+  .card {
+    background: var(--glass-fill);
+    backdrop-filter: blur(22px) saturate(1.3);
+    -webkit-backdrop-filter: blur(22px) saturate(1.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+    padding: 30px 24px 32px;
+    position: relative;
+    box-shadow: 0 20px 40px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 14px; right: 14px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+  }
+
+  .hazard-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(28,26,23,0.85);
+    color: #f1ede3;
+    font-weight: 600;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+  }
+  .hazard-chip .bar { width: 14px; height: 8px; background: repeating-linear-gradient(-45deg, #f1ede3 0 2px, var(--glow-orange) 2px 4px); border-radius: 2px; }
+
+  .intro {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--on-glass-dim);
+    margin: 0 0 20px;
+  }
+
+  .divider { border: none; border-top: 1px solid rgba(28,26,23,0.14); margin: 0 0 20px; }
+
+  h1 {
+    font-family: 'Teko', sans-serif;
+    font-weight: 600;
+    font-size: 34px;
+    line-height: 1.0;
+    letter-spacing: 0.005em;
+    color: var(--on-glass);
+    margin: 0 0 4px;
+  }
+
+  .question {
+    font-family: 'Teko', sans-serif;
+    font-weight: 600;
+    font-size: 27px;
+    line-height: 1.05;
+    color: var(--on-glass);
+    margin: 0 0 22px;
+  }
+
+  .aside {
+    font-family: 'Neucha', cursive;
+    font-size: 17px;
+    color: var(--on-glass-dim);
+    margin: -14px 0 22px;
+    transform: rotate(-0.6deg);
+  }
+
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .choice {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 14px;
+    padding: 18px 10px;
+    color: var(--on-glass);
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.15s ease;
+  }
+  .choice:hover:not(:disabled) { background: rgba(255,255,255,0.72); }
+  .choice:active:not(:disabled) { transform: scale(0.96); }
+  .choice:focus-visible { outline: 3px solid var(--glow-orange); outline-offset: 2px; }
+  .choice:disabled { cursor: default; opacity: 0.5; }
+  .choice.picked { background: rgba(255,122,41,0.22); border-color: var(--glow-orange); opacity: 1; }
+  .choice.correct { background: rgba(31,138,76,0.22); border-color: var(--green); color: var(--green); opacity: 1; }
+  .choice.wrong { background: rgba(214,68,32,0.2); border-color: var(--red); color: var(--red); opacity: 1; }
+
+  .tech-card {
+    text-align: left;
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 16px;
+    padding: 16px 16px;
+    color: var(--on-glass);
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.15s ease;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+  }
+  .tech-card:hover { background: rgba(255,255,255,0.72); }
+  .tech-card:active { transform: scale(0.98); }
+  .tech-card:focus-visible { outline: 3px solid var(--glow-orange); outline-offset: 2px; }
+  .tech-card .tech-title {
+    font-family: 'Teko', sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--glow-orange);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+  }
+  .tech-card .tech-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--on-glass-dim);
+  }
+
+  .tech-card.correct { background: rgba(31,138,76,0.22); border-color: var(--green); }
+  .tech-card.correct .tech-title { color: var(--green); }
+  .tech-card.wrong { background: rgba(214,68,32,0.2); border-color: var(--red); opacity: 0.6; cursor: default; }
+  .tech-card:disabled { cursor: default; }
+
+  .answer-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .answer-row input[type="text"] {
+    flex: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.7);
+    padding: 11px 12px;
+    color: var(--on-glass);
+    border-radius: 12px;
+  }
+  .answer-row input[type="text"]:focus { outline: 3px solid var(--glow-orange); outline-offset: 1px; }
+  .answer-row input[type="text"]::placeholder { color: var(--on-glass-dim); opacity: 0.7; }
+  .answer-row button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+    background: linear-gradient(135deg, var(--glow-orange), #e0480f);
+    color: #fff3e8;
+    border: none;
+    padding: 0 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(226,87,13,0.4);
+  }
+  .answer-row button:active { transform: scale(0.96); }
+  .answer-row button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  .player-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .player-row label {
+    flex: 1;
+    font-family: 'Teko', sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.01em;
+    color: var(--on-glass);
+    margin: 0;
+  }
+  .player-row input[type="text"] {
+    width: 64px;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.7);
+    padding: 9px 6px;
+    color: var(--on-glass);
+    border-radius: 10px;
+  }
+  .player-row input[type="text"]:focus { outline: 3px solid var(--glow-orange); outline-offset: 1px; }
+
+  .submit-btn {
+    width: 100%;
+    margin-top: 8px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    background: linear-gradient(135deg, var(--glow-orange), #e0480f);
+    color: #fff3e8;
+    border: none;
+    padding: 13px 0;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(226,87,13,0.4);
+  }
+  .submit-btn:active { transform: scale(0.97); }
+  .submit-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  .leaderboard {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+  }
+  .leaderboard li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(28,26,23,0.12);
+  }
+  .leaderboard li:last-child { border-bottom: none; }
+  .leaderboard .rank {
+    font-family: 'Teko', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--glow-orange);
+    width: 20px;
+  }
+  .leaderboard .name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--on-glass);
+    flex: 1;
+  }
+  .leaderboard .score {
+    font-family: 'Teko', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--on-glass);
+  }
+  .leaderboard .verdict-line {
+    flex-basis: 100%;
+    font-size: 12.5px;
+    color: var(--on-glass-dim);
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,12,9,0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(24px) saturate(1.3);
+    -webkit-backdrop-filter: blur(24px) saturate(1.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 28px 24px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 50px rgba(0,0,0,0.4);
+    transform: scale(0.9);
+    opacity: 0;
+    animation: modal-in 0.3s cubic-bezier(.2,1.4,.4,1) forwards;
+  }
+  @keyframes modal-in { to { transform: scale(1); opacity: 1; } }
+  .modal p {
+    font-family: 'Teko', sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 1.05;
+    color: var(--on-glass);
+    margin: 0 0 20px;
+  }
+  .modal button {
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    background: linear-gradient(135deg, var(--glow-orange), #e0480f);
+    color: #fff3e8;
+    border: none;
+    padding: 13px 0;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(226,87,13,0.4);
+  }
+  .modal button:active { transform: scale(0.97); }
+  .modal button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+  .feedback {
+    margin-top: 16px;
+    font-weight: 600;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--on-glass);
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback .verdict { color: var(--glow-orange); }
+
+  .next-btn {
+    margin-top: 18px;
+    display: none;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    background: linear-gradient(135deg, var(--glow-orange), #e0480f);
+    color: #fff3e8;
+    border: none;
+    padding: 13px 0;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(226,87,13,0.4);
+  }
+  .next-btn.show { display: block; }
+  .next-btn:active { transform: scale(0.97); }
+  .next-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  .progress {
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    text-align: center;
+    margin-top: 18px;
+  }
+</style>
+</head>
+<body>
+
+<div class="blob a"></div>
+<div class="blob b"></div>
+
+<div class="stage">
+  <div class="eyebrow-wrap">
+    <div class="eyebrow"><span class="dot"></span>НОВАЯ ЗАГАДКА</div>
+  </div>
+
+  <div class="card">
+    <div class="hazard-chip"><span class="bar"></span>ИСПЫТАНИЕ</div>
+
+    <p class="intro">Ну что, вы уже в городе. Найдите кольцо — каждому по 2 минуты, чтобы закинуть мячи в корзину.</p>
+
+    <h1>Сколько</h1>
+    <p class="question">кто закинул?</p>
+
+    <hr class="divider">
+
+    <div id="player-rows"></div>
+
+    <button type="button" class="submit-btn" id="score-submit">Забили</button>
+    <p class="feedback" id="feedback"></p>
+
+    <ol class="leaderboard" id="leaderboard" style="display:none;"></ol>
+
+    <button class="next-btn" id="next-btn">Дальше →</button>
+  </div>
+
+</div>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <p>Ебашьте фотку и погнали<br>дальше к водопаду.</p>
+  </div>
+</div>
+
+<script>
+  const players = ['Аксель Андер', 'Инспирт Неразведенный', 'Дмитрий Эскобаркин', 'Граф Влад Факула', 'Костя Кемпбелл'];
+
+  const rowsEl = document.getElementById('player-rows');
+  players.forEach((name, i) => {
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    row.innerHTML = `<label for="score-${i}">${name}</label><input type="text" id="score-${i}" inputmode="numeric" placeholder="0" autocomplete="off">`;
+    rowsEl.appendChild(row);
+  });
+
+  const scoreSubmit = document.getElementById('score-submit');
+  const feedback = document.getElementById('feedback');
+  const leaderboard = document.getElementById('leaderboard');
+  const nextBtn = document.getElementById('next-btn');
+
+  const verdictPools = {
+    low: ['Лошара ебаный.', 'Ну ты бля косой.', 'Бомж за водку лучше забрасывает.'],
+    mid: ['Без рук попал бы больше.', 'Это ты норм придумал, еба.'],
+    high: ['Хорош выёбываться.', 'Король вечеринок, мать твоя.']
+  };
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function poolFor(num) {
+    if (num <= 2) return 'low';
+    if (num <= 6) return 'mid';
+    return 'high';
+  }
+
+  function assignVerdicts(results) {
+    const cursors = { low: shuffle(verdictPools.low), mid: shuffle(verdictPools.mid), high: shuffle(verdictPools.high) };
+    const counters = { low: 0, mid: 0, high: 0 };
+    return results.map(r => {
+      const key = poolFor(r.score);
+      const pool = cursors[key];
+      const line = pool[counters[key] % pool.length];
+      counters[key]++;
+      return { ...r, verdict: line };
+    });
+  }
+
+  scoreSubmit.addEventListener('click', () => {
+    const results = [];
+    for (let i = 0; i < players.length; i++) {
+      const input = document.getElementById(`score-${i}`);
+      const num = parseInt(input.value.trim(), 10);
+      if (isNaN(num)) {
+        feedback.textContent = 'Цифрами пиши, а не хуйнёй какой-то. Заполни всех.';
+        feedback.className = 'feedback show';
+        feedback.style.color = 'var(--red)';
+        return;
+      }
+      results.push({ name: players[i], score: num });
+    }
+
+    results.sort((a, b) => b.score - a.score);
+    const withVerdicts = assignVerdicts(results);
+
+    leaderboard.innerHTML = '';
+    withVerdicts.forEach((r, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="rank">${i + 1}</span><span class="name">${r.name}</span><span class="score">${r.score}</span><span class="verdict-line">${r.verdict}</span>`;
+      leaderboard.appendChild(li);
+    });
+
+    document.getElementById('player-rows').style.display = 'none';
+    scoreSubmit.style.display = 'none';
+    feedback.textContent = '';
+    feedback.className = 'feedback';
+    leaderboard.style.display = 'block';
+    nextBtn.classList.add('show');
+  });
+
+  const modalBackdrop = document.getElementById('modal-backdrop');
+
+  nextBtn.addEventListener('click', () => {
+    modalBackdrop.classList.add('show');
+  });
+</script>
+
+</body>
+</html>
