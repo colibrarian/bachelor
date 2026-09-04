@@ -444,6 +444,7 @@
 <div class="modal-backdrop" id="modal-backdrop">
   <div class="modal">
     <p>Ебашьте фотку и погнали<br>дальше к водопаду.</p>
+    <button type="button" id="modal-next">Какому нахуй водопаду →</button>
   </div>
 </div>
 
@@ -529,9 +530,14 @@
   });
 
   const modalBackdrop = document.getElementById('modal-backdrop');
+  const modalNext = document.getElementById('modal-next');
 
   nextBtn.addEventListener('click', () => {
     modalBackdrop.classList.add('show');
+  });
+
+  modalNext.addEventListener('click', () => {
+    window.location.href = 'page-08.html';
   });
 </script>
 
